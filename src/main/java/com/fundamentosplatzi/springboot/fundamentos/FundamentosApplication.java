@@ -1,5 +1,6 @@
 package com.fundamentosplatzi.springboot.fundamentos;
 
+import antlr.collections.impl.LList;
 import com.fundamentosplatzi.springboot.fundamentos.bean.MyBean;
 import com.fundamentosplatzi.springboot.fundamentos.bean.MyBeanWithDependency;
 import com.fundamentosplatzi.springboot.fundamentos.bean.MyBeanWithProperties;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -50,6 +52,17 @@ public class FundamentosApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		//ejemplosAnteriores();
 		saveUserInDataBase();
+		getInformationJpqlFromUser();
+	}
+
+	private void getInformationJpqlFromUser() {
+		LOGGER.info("Usuario con el metodo findByUserEmail" +
+				userRepository.findByUserEmail("maik@mail.com")
+						.orElseThrow(() -> new RuntimeException("No se encontro el usuario")));
+
+		userRepository.findAndSort("user", Sort.by("id").descending())
+				.stream()
+				.forEach(user -> LOGGER.info("Usuario con metodo sort " + user));
 	}
 
 	public void saveUserInDataBase() {
